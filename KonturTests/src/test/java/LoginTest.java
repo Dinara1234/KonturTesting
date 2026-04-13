@@ -1,89 +1,44 @@
-
-import java.time.Duration;
-import java.util.regex.Pattern;
-import java.util.concurrent.TimeUnit;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
-import org.apache.commons.io.FileUtils;
-import java.io.File;
 
-import static org.junit.Assert.fail;
-
-public class LoginTest {
-    private WebDriver driver;
-    private String baseUrl;
-    private boolean acceptNextAlert = true;
-    private StringBuffer verificationErrors = new StringBuffer();
-    JavascriptExecutor js;
-    @Before
-    public void setUp() throws Exception {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        driver = new ChromeDriver();
-        baseUrl = "https://www.google.com/";
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
-        js = (JavascriptExecutor) driver;
-    }
+public class LoginTest extends BaseTest{
 
     @Test
-    public void testUntitledTestCase() throws Exception {
+    public void loginTestCase() throws Exception {
         //ERROR: Caught exception [unknown command []]
-        driver.get(baseUrl + "chrome://newtab/");
-        driver.get("https://staff-testing.testkontur.ru/");
-        driver.findElement(By.id("Username")).click();
-        driver.findElement(By.id("Username")).clear();
-        driver.findElement(By.id("Username")).sendKeys("mr.ruslanick@gmail.com");
-        driver.findElement(By.id("Password")).click();
-        driver.findElement(By.xpath("//div/div")).click();
-        driver.findElement(By.id("Password")).click();
-        driver.findElement(By.id("Password")).clear();
-        driver.findElement(By.id("Password")).sendKeys("20_Ruslan_05");
-        driver.findElement(By.name("button")).click();
+        openLoginPage();
+        UserAccount account = new UserAccount("mr.ruslanick@gmail.com", "20_Ruslan_05");
+        login(account);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        driver.quit();
-        String verificationErrorString = verificationErrors.toString();
-        if (!"".equals(verificationErrorString)) {
-            fail(verificationErrorString);
-        }
+
+    @Test
+    public void createCommentTestCase() throws Exception {
+        //ERROR: Caught exception [unknown command []]
+        openLoginPage();
+        UserAccount account = new UserAccount("mr.ruslanick@gmail.com", "20_Ruslan_05");
+        login(account);
+        openNewsPage();
+        createComment("Комментарий");
     }
 
-    private boolean isElementPresent(By by) {
-        try {
-            driver.findElement(by);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+
+    @Test
+    public void createNewCommunityTestCase() throws Exception {
+        //ERROR: Caught exception [unknown command []]
+        openLoginPage();
+        UserAccount account = new UserAccount("mr.ruslanick@gmail.com", "20_Ruslan_05");
+        login(account);
+        openCommunitiesPage();
+        Community community = new Community("Сообщество", "cjj,o");
+        createNewCommunity(community);
     }
 
-    private boolean isAlertPresent() {
-        try {
-            driver.switchTo().alert();
-            return true;
-        } catch (NoAlertPresentException e) {
-            return false;
-        }
-    }
 
-    private String closeAlertAndGetItsText() {
-        try {
-            Alert alert = driver.switchTo().alert();
-            String alertText = alert.getText();
-            if (acceptNextAlert) {
-                alert.accept();
-            } else {
-                alert.dismiss();
-            }
-            return alertText;
-        } finally {
-            acceptNextAlert = true;
-        }
-    }
+
+
+
+
+
+
+
 }
