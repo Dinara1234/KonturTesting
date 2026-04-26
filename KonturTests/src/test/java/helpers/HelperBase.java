@@ -1,5 +1,7 @@
-import org.openqa.selenium.WebDriver;
+package helpers;
 
+import org.openqa.selenium.WebDriver;
+import appmanager.ApplicationManager;
 
 import org.openqa.selenium.*;
 

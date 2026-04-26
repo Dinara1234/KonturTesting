@@ -1,10 +1,14 @@
+package appmanager;
+
+import helpers.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
 import java.time.Duration;
 
 public class ApplicationManager {
+    private static ThreadLocal<ApplicationManager> app = new ThreadLocal<>();
+
     private WebDriver driver;
     private String baseUrl;
 
@@ -13,7 +17,7 @@ public class ApplicationManager {
     private CommunityHelper community;
     private CommentHelper comment;
 
-    public ApplicationManager() {
+    private ApplicationManager() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         baseUrl = "https://staff-testing.testkontur.ru";
@@ -25,13 +29,25 @@ public class ApplicationManager {
         comment = new CommentHelper(this);
     }
 
-    public void stop() {
-        driver.quit();
+    public static ApplicationManager getInstance() {
+        if (app.get() == null) {
+            ApplicationManager newInstance = new ApplicationManager();
+            newInstance.getNavigation().openLoginPage();
+            app.set(newInstance);
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    newInstance.getDriver().quit();
+                } catch (Exception e) {
+
+                }
+            }));
+        }
+        return app.get();
     }
 
     public WebDriver getDriver() { return driver; }
     public NavigationHelper getNavigation() { return navigation; }
     public LoginHelper getAuth() { return auth; }
     public CommunityHelper getCommunity() { return community; }
-    public CommentHelper getContact() { return comment; }
+    public CommentHelper getComment() { return comment; }
 }

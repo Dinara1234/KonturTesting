@@ -1,3 +1,5 @@
+package org.example;
+
 public class Community {
     private String name;
     private String description;
